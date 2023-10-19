@@ -83,7 +83,9 @@ const MainBody = () => {
           <div className="card-body">
             <p className="text-xl text-black">
               Owner Name :
-              <span className="text-green-800 font-bold pl-2">Arijit Saha</span>
+              <span className="text-green-800 font-bold pl-2">
+                Subham Ghosh
+              </span>
             </p>
             <p className="text-xl text-black">
               Share Persentage :
