@@ -5,17 +5,17 @@ import UpdateFund from "@/components/adminSide/UpdateFund";
 import { useRouter } from "next/router";
 
 const EditFund = () => {
-  const [projectData, setProjectData] = useState([]);
+  const [fundData, setFundData] = useState([]);
   const router = useRouter();
   const fundId = router?.query?.Id;
   const getShareData = async () => {
     getDocs(collection(database, "fund2")).then((querySnapshot) => {
       const data = querySnapshot.docs.map((doc) => doc.data());
-      setProjectData(data);
+      setFundData(data);
     });
   };
 
-  const projectDetails = projectData?.filter((data) => data?.id == fundId);
+  const projectDetails = fundData?.filter((data) => data?.id == fundId);
   console.log(projectDetails);
   useEffect(() => {
     getShareData();

@@ -3,19 +3,19 @@ import { useRouter } from "next/router";
 import { doc, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
 
-const UpdateFund = ({ fundData }) => {
-  const [share, setShare] = useState("");
+const UpdateFund = (fundData) => {
+  const [amount, setAmount] = useState("");
   const router = useRouter();
 
   const onHandleSubmit = (event) => {
     event.preventDefault();
     try {
       updateDoc(doc(database, "fund2", `${fundData?.id}`), {
-        amount: share || fundData?.amount,
+        amount: amount || fundData?.amount,
       }).then(() => {
         alert("fund update successfully");
         router.push("/adminPage");
-        setShare("");
+        setAmount("");
       });
     } catch (error) {
       console.log(error);
@@ -40,8 +40,8 @@ const UpdateFund = ({ fundData }) => {
                 className="bg-gray-300 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 id="inline-full-name"
                 type="text"
-                value={share || fundData?.amount}
-                onChange={(e) => setShare(e.target.value)}
+                value={amount || fundData?.amount}
+                onChange={(e) => setAmount(e.target.value)}
               />
             </div>
           </div>
