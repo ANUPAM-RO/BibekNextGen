@@ -1,30 +1,33 @@
+import { useRouter } from "next/router";
+import React from "react";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { database } from "@/firebaseconfig";
-import UpdateFund from "@/components/adminSide/UpdateFund";
-import { useRouter } from "next/router";
+import AddFund from "@/components/adminSide/AddFund";
 
-const EditFund = () => {
+const UpdateFund = () => {
   const [fundData, setFundData] = useState([]);
   const router = useRouter();
   const fundId = router?.query?.Id;
-  const getShareData = async () => {
+
+  const getFundData = async () => {
     getDocs(collection(database, "fund2")).then((querySnapshot) => {
       const data = querySnapshot.docs.map((doc) => doc.data());
       setFundData(data);
     });
   };
 
-  const projectDetails = fundData?.filter((data) => data?.id == fundId);
-  console.log(projectDetails);
+  const fundDetails = fundData?.filter((data) => data?.id == fundId);
+
   useEffect(() => {
-    getShareData();
+    getFundData();
   }, []);
+
   return (
     <div>
-      <UpdateFund fundData={projectDetails[0]} />
+      <AddFund fundData={fundDetails[0]} />
     </div>
   );
 };
 
-export default EditFund;
+export default UpdateFund;

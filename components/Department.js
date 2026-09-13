@@ -6,6 +6,15 @@ import {
   TabPanel,
 } from "@material-tailwind/react";
 
+const initials = (name = "") =>
+  name
+    .split(" ")
+    .map((part) => part[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
 export default function Department({ memberData }) {
   const fontendData = memberData?.filter((data) => data?.type === "fed");
   const backendData = memberData?.filter((data) => data?.type === "bed");
@@ -13,25 +22,25 @@ export default function Department({ memberData }) {
 
   const data = [
     {
-      label: "Frontend Department",
+      label: "Frontend",
       value: "fed",
       dataArr: fontendData,
     },
     {
-      label: "Backend Department",
+      label: "Backend",
       value: "bed",
       dataArr: backendData,
     },
     {
-      label: "Devops Department",
+      label: "DevOps",
       value: "dvd",
       dataArr: devopsData,
     },
   ];
 
   return (
-    <Tabs value="html">
-      <TabsHeader className="mb-2">
+    <Tabs value="fed">
+      <TabsHeader className="mb-4 bg-slate-100">
         {data.map(({ label, value }) => (
           <Tab key={value} value={value}>
             {label}
@@ -40,25 +49,41 @@ export default function Department({ memberData }) {
       </TabsHeader>
       <TabsBody>
         {data.map(({ value, dataArr }) => (
-          <TabPanel key={value} value={value}>
-            <div className="overflow-x-auto">
+          <TabPanel key={value} value={value} className="p-0">
+            <div className="overflow-x-auto rounded-xl border border-slate-100">
               <table className="table w-full">
-                {/* head */}
                 <thead>
-                  <tr>
-                    <th>Employee Id</th>
-                    <th>Employee Name</th>
-                    <th>Degisnation</th>
+                  <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wide">
+                    <th>Employee</th>
+                    <th>Id</th>
+                    <th>Designation</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {dataArr?.map((emp) => (
+                  {dataArr?.length ? (
+                    dataArr.map((emp) => (
+                      <tr key={emp?.member_Id} className="hover">
+                        <td>
+                          <div className="flex items-center gap-3">
+                            <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                              {initials(emp?.member_Name)}
+                            </div>
+                            <span className="font-medium text-slate-800">
+                              {emp?.member_Name}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="text-slate-500">{emp?.member_Id}</td>
+                        <td className="text-slate-500">{emp?.designation}</td>
+                      </tr>
+                    ))
+                  ) : (
                     <tr>
-                      <td>{emp?.member_Id}</td>
-                      <td>{emp?.member_Name}</td>
-                      <td>{emp?.designation}</td>
+                      <td colSpan={3} className="text-center text-slate-400 py-6">
+                        No employees in this department.
+                      </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

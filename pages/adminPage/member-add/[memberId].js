@@ -11,7 +11,7 @@ const UpdateMember = () => {
   const memberId = router?.query?.memberId;
 
   const getMemberData = async () => {
-    getDocs(collection(database, "store member2")).then((querySnapshot) => {
+    getDocs(collection(database, "store member")).then((querySnapshot) => {
       const data = querySnapshot.docs.map((doc) => doc.data());
       setMemberData(data);
     });

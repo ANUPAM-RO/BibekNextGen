@@ -2,6 +2,79 @@ import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { database } from "@/firebaseconfig";
 import Department from "./Department";
+import {
+  Wallet,
+  FolderKanban,
+  Bell,
+  Users,
+  Briefcase,
+} from "lucide-react";
+
+const currency = (value) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(value) || 0);
+
+const SectionHeader = ({ icon, title, accent = "text-primary" }) => (
+  <div className="flex items-center gap-2 mb-4">
+    <span className={accent}>{icon}</span>
+    <h2 className="text-xl font-bold text-slate-800">{title}</h2>
+  </div>
+);
+
+const initials = (name = "") =>
+  name
+    .split(" ")
+    .map((part) => part[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+const OwnerCard = ({ name, percentage }) => (
+  <div className="card bg-base-100 border border-slate-100 shadow-soft flex-1">
+    <div className="card-body flex-row items-center gap-4">
+      <div className="h-14 w-14 shrink-0 rounded-2xl bg-primary/10 text-primary flex items-center justify-center text-lg font-bold">
+        {initials(name)}
+      </div>
+      <div className="flex-1">
+        <p className="text-slate-800 font-semibold">{name}</p>
+        <p className="text-sm text-slate-500">Owner</p>
+        <div className="mt-2 h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-primary"
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+      </div>
+      <span className="badge badge-primary badge-lg font-semibold">
+        {percentage}%
+      </span>
+    </div>
+  </div>
+);
+
+const ProjectCard = ({ name, amount, type }) => (
+  <div className="card bg-base-100 border border-slate-100 shadow-soft hover:shadow-lg transition-shadow">
+    <div className="card-body">
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="card-title text-slate-800 text-base">{name}</h3>
+        <span
+          className={`badge badge-sm font-semibold ${
+            type === "CP" ? "badge-success" : "badge-ghost"
+          }`}
+        >
+          {type === "CP" ? "Current" : "Previous"}
+        </span>
+      </div>
+      <p className="text-2xl font-bold text-primary mt-1">
+        {currency(amount)}
+      </p>
+    </div>
+  </div>
+);
 
 const MainBody = () => {
   const [memberData, setMemberData] = useState([]);
@@ -56,137 +129,112 @@ const MainBody = () => {
     getNotificationData();
     getFundData();
   }, []);
-  return (
-    <div>
-      <div className="text-2xl font-bold text-green-500 flex justify-center pb-4 pt-4">
-        Owners
-      </div>
-      <div className="flex justify-between">
-        <div className="card w-96 h-36 bg-white text-primary-content ml-2">
-          <div className="card-body">
-            <p className="text-xl text-black">
-              Owner Name :
-              <span className="text-green-800 font-bold pl-2">
-                Debanshu Das
-              </span>
-            </p>
-            <p className="text-xl text-black">
-              Share Persentage :
-              <span className="text-amber-800 pl-2">{0}%</span>
-            </p>
-          </div>
-        </div>
 
-        <div className="card w-96 h-36 bg-white text-primary-content mr-2">
-          <div className="card-body">
-            <p className="text-xl text-black">
-              Owner Name :
-              <span className="text-green-800 font-bold pl-2">
-                Subham Ghosh
-              </span>
-            </p>
-            <p className="text-xl text-black">
-              Share Persentage :
-              <span className="text-amber-800 pl-2">{100}%</span>
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="text-2xl font-bold text-red-500 flex justify-center pb-4 pt-4">
-        Company Fund
-      </div>
-      <div className="flex justify-center">
-        <div className="card w-96 h-24 bg-white text-primary-content mr-2 ">
-          <div className="card-body">
-            <p className="text-xl text-black">
-              Amount :
-              <span className="text-green-800 font-bold pl-2">
-                {fundData[0]?.amount}
-              </span>
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="text-2xl font-bold text-red-500 flex justify-center pb-4 pt-4">
-        Projects Minamata
-      </div>
-      <div className="flex flex-col items-center">
-        <div>
-          <label className="relative inline-flex items-center mb-5 cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" disabled />
-            <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-            <span className="ms-3 text-lg font-medium text-gray-400 dark:text-gray-500">
-              Employee
-            </span>
-          </label>
-        </div>
-        <div className="mr-5">
-          <label className="relative inline-flex items-center mb-5 cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" disabled />
-            <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-            <span className="ms-3 text-lg font-medium text-gray-400 dark:text-gray-500">
-              Owner
-            </span>
-          </label>
-        </div>
-      </div>
-      <div>
-        <p className="text-xl font-bold text-red-700 p-4">Previous Projects:</p>
-        <div className=" grid grid-cols-3 md:grid-cols-2 gap-4 ">
-          {!!previousProjects?.length &&
-            previousProjects?.map((data) => (
-              <div className="card w-96 bg-white text-neutral-content m-4">
-                <div className="card-body">
-                  <h2 className="card-title text-black">
-                    Project name :
-                    <span className="text-green-500">{data?.project_Name}</span>
-                  </h2>
-                  <p className="text-black font-semibold">
-                    Amount :
-                    <span className="text-cyan-400 font-semibold pl-2">
-                      {data?.project_Amount}
-                    </span>
-                  </p>
-                </div>
-              </div>
+  return (
+    <div className="flex flex-col gap-10">
+      <section>
+        <SectionHeader icon={<Briefcase size={20} />} title="Owners" />
+        {!!shareData?.length ? (
+          <div className="flex flex-col md:flex-row gap-4">
+            {shareData?.map((data) => (
+              <OwnerCard
+                key={data?.id}
+                name={data?.owner_Name}
+                percentage={data?.percentage}
+              />
             ))}
+          </div>
+        ) : (
+          <p className="text-slate-400 text-sm">No owners added yet.</p>
+        )}
+      </section>
+
+      <section>
+        <SectionHeader icon={<Wallet size={20} />} title="Company Fund" />
+        <div className="card bg-base-100 border border-slate-100 shadow-soft max-w-sm">
+          <div className="card-body flex-row items-center gap-4">
+            <div className="h-14 w-14 rounded-2xl bg-success/10 text-success flex items-center justify-center">
+              <Wallet size={24} />
+            </div>
+            <div>
+              <p className="text-sm text-slate-500">Available balance</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {currency(fundData[0]?.amount)}
+              </p>
+            </div>
+          </div>
         </div>
-        <p className="text-xl font-bold text-red-700 p-4">Current Projects:</p>
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
+      </section>
+
+      <section>
+        <SectionHeader icon={<FolderKanban size={20} />} title="Projects" />
+
+        <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
+          Current
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
           {!!currentProjects?.length &&
             currentProjects?.map((data) => (
-              <div className="card w-96 bg-white text-neutral-content m-4">
-                <div className="card-body">
-                  <h2 className="card-title text-black">
-                    Project name :
-                    <span className="text-green-500">{data?.project_Name}</span>
-                  </h2>
-                  <p className="text-black font-semibold">
-                    Amount :
-                    <span className="text-cyan-400 font-semibold  pl-2">
-                      {data?.project_Amount}
-                    </span>
-                  </p>
+              <ProjectCard
+                key={data?.project_Id}
+                name={data?.project_Name}
+                amount={data?.project_Amount}
+                type={data?.project_Type}
+              />
+            ))}
+        </div>
+
+        <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
+          Previous
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          {!!previousProjects?.length &&
+            previousProjects?.map((data) => (
+              <ProjectCard
+                key={data?.project_Id}
+                name={data?.project_Name}
+                amount={data?.project_Amount}
+                type={data?.project_Type}
+              />
+            ))}
+        </div>
+      </section>
+
+      <section>
+        <SectionHeader
+          icon={<Bell size={20} />}
+          title="Notices"
+          accent="text-warning"
+        />
+        <div className="flex flex-col gap-3">
+          {!!message?.length ? (
+            message?.map((data, idx) => (
+              <div
+                key={idx}
+                className="flex items-start gap-4 rounded-xl border border-slate-100 bg-base-100 shadow-soft px-5 py-4 transition hover:shadow-lg hover:border-warning/30"
+              >
+                <div className="h-9 w-9 shrink-0 rounded-full bg-warning/10 text-warning flex items-center justify-center">
+                  <Bell size={16} />
                 </div>
+                <p className="text-slate-700 leading-relaxed pt-1.5">
+                  {data?.message}
+                </p>
               </div>
-            ))}
+            ))
+          ) : (
+            <p className="text-slate-400 text-sm">No notices right now.</p>
+          )}
         </div>
-      </div>
-      <div className="text-2xl font-bold text-orange-700 flex justify-center pb-4 pt-4">
-        Notice!!
-      </div>
-      <div className="card w-11/12 bg-white text-neutral-content ml-4 mb-4">
-        <div className="card-body">
-          {!!message?.length &&
-            message?.map((data) => (
-              <h2 className="card-title text-black">{data?.message}</h2>
-            ))}
+      </section>
+
+      <section>
+        <SectionHeader icon={<Users size={20} />} title="Employees" />
+        <div className="card bg-base-100 border border-slate-100 shadow-soft">
+          <div className="card-body">
+            <Department memberData={memberData} />
+          </div>
         </div>
-      </div>
-      <div className="text-2xl font-bold text-yellow-700 flex justify-center pb-4 pt-4">
-        Employee list with details
-      </div>
-      <Department memberData={memberData} />
+      </section>
     </div>
   );
 };
