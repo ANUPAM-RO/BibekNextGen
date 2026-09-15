@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Tabs,
   TabsHeader,
@@ -16,6 +17,7 @@ const initials = (name = "") =>
     .toUpperCase();
 
 export default function Department({ memberData }) {
+  const [activeTab, setActiveTab] = useState("fed");
   const fontendData = memberData?.filter((data) => data?.type === "fed");
   const backendData = memberData?.filter((data) => data?.type === "bed");
   const devopsData = memberData?.filter((data) => data?.type === "dvd");
@@ -40,9 +42,22 @@ export default function Department({ memberData }) {
 
   return (
     <Tabs value="fed">
-      <TabsHeader className="mb-4 bg-slate-100">
+      <TabsHeader
+        className="mb-4 bg-slate-900/5 p-1.5"
+        indicatorProps={{
+          className:
+            "bg-gradient-to-r from-primary to-secondary shadow-md shadow-primary/30 rounded-lg",
+        }}
+      >
         {data.map(({ label, value }) => (
-          <Tab key={value} value={value}>
+          <Tab
+            key={value}
+            value={value}
+            onClick={() => setActiveTab(value)}
+            className={`font-semibold transition-colors ${
+              activeTab === value ? "text-white" : "text-slate-500"
+            }`}
+          >
             {label}
           </Tab>
         ))}
@@ -50,10 +65,10 @@ export default function Department({ memberData }) {
       <TabsBody>
         {data.map(({ value, dataArr }) => (
           <TabPanel key={value} value={value} className="p-0">
-            <div className="overflow-x-auto rounded-xl border border-slate-100">
+            <div className="overflow-x-auto rounded-xl border border-white/60 ring-1 ring-black/5">
               <table className="table w-full">
                 <thead>
-                  <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wide">
+                  <tr className="bg-primary/5 text-slate-600 text-xs uppercase tracking-wide">
                     <th>Employee</th>
                     <th>Id</th>
                     <th>Designation</th>
@@ -62,13 +77,16 @@ export default function Department({ memberData }) {
                 <tbody>
                   {dataArr?.length ? (
                     dataArr.map((emp) => (
-                      <tr key={emp?.member_Id} className="hover">
+                      <tr
+                        key={emp?.member_Id}
+                        className="hover:bg-primary/5 transition-colors"
+                      >
                         <td>
                           <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-secondary text-white shadow-sm shadow-primary/30 flex items-center justify-center text-xs font-bold">
                               {initials(emp?.member_Name)}
                             </div>
-                            <span className="font-medium text-slate-800">
+                            <span className="font-medium text-slate-900">
                               {emp?.member_Name}
                             </span>
                           </div>
