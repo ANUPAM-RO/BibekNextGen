@@ -15,7 +15,7 @@ const currency = (value) =>
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
-  }).format(Number(value) || 0);
+  }).format(Number(String(value ?? "").replace(/[^0-9.-]/g, "")) || 0);
 
 const SectionHeader = ({ icon, title, accent = "text-primary" }) => (
   <div className="flex items-center gap-2.5 mb-4">
